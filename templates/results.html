@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Topic Modeling Results</title>
+</head>
+<body>
+    <h2>Input Documents:</h2>
+    <p>{{ documents }}</p>
+    <h2>Number of Topics:</h2>
+    <p>{{ num_topics }}</p>
+    <h2>Topic Words:</h2>
+    <ul>
+        {% for topic in topic_words %}
+            <li>{{ topic }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Topic Modeling</title>
+</head>
+<body>
+    <form method="POST" action="/results">
+        <label for="documents">Documents:</label>
+        <textarea name="documents" rows="10"></textarea>
+        <br>
+        <label for="num_topics">Number of topics:</label>
+        <input type="number" name="num_topics" value="2" min="1" max="10">
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
