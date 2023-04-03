@@ -5,7 +5,7 @@
     <title>Topic Modeling</title>
 </head>
 <body>
-    <form method="POST" action="/results">
+    <form method="POST" action="/">
         <label for="documents">Documents:</label>
         <textarea name="documents" rows="10"></textarea>
         <br>
@@ -14,5 +14,10 @@
         <br>
         <input type="submit" value="Submit">
     </form>
+    <ul>
+        {% for topic in topic_words %}
+            <li>{{ topic }}</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

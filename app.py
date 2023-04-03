@@ -55,34 +55,57 @@ app = Flask(__name__)
 #     else:
 #         return render_template('index.html')
 
-@app.route('/')
+@app.route('/', methods=['POST', 'GET'])
 def index():
+    if request.method == 'POST':
+        # HTML form에서 전송한 데이터 받아오기
+        documents = request.form.get('documents')
+        num_topics = int(request.form.get('num_topics'))
+
+        # 문서 토큰화 및 불용어 제거
+        stopwords = ['the', 'and', 'of', 'to', 'in', 'a']
+        texts = [[word for word in document.lower().split() if word not in stopwords] for document in
+                 documents.split('\n')]
+
+        # 문서를 단어-빈도 행렬로 변환
+        dictionary = corpora.Dictionary(texts)
+        corpus = [dictionary.doc2bow(text) for text in texts]
+
+        # LDA 모델링 수행
+        lda = models.LdaModel(corpus, num_topics=num_topics, id2word=dictionary)
+
+        # 각 토픽의 상위 단어 출력
+        topic_words = []
+        for i in range(num_topics):
+            topic_words.append([word for word, prob in lda.show_topic(i)])
+
+        return render_template('index.html', topic_words=topic_words)
     return render_template('index.html')
 
 
-@app.route('/results', methods=['POST', 'GET'])
-def results():
-    # HTML form에서 전송한 데이터 받아오기
-    documents = request.form.get('documents')
-    num_topics = int(request.form.get('num_topics'))
-
-    # 문서 토큰화 및 불용어 제거
-    stopwords = ['the', 'and', 'of', 'to', 'in', 'a']
-    texts = [[word for word in document.lower().split() if word not in stopwords] for document in documents.split('\n')]
-
-    # 문서를 단어-빈도 행렬로 변환
-    dictionary = corpora.Dictionary(texts)
-    corpus = [dictionary.doc2bow(text) for text in texts]
-
-    # LDA 모델링 수행
-    lda = models.LdaModel(corpus, num_topics=num_topics, id2word=dictionary)
-
-    # 각 토픽의 상위 단어 출력
-    topic_words = []
-    for i in range(num_topics):
-        topic_words.append([word for word, prob in lda.show_topic(i)])
-
-    return render_template('results.html', documents=documents, num_topics=num_topics, topic_words=topic_words)
+# @app.route('/results', methods=['POST', 'GET'])
+# def results():
+#     # HTML form에서 전송한 데이터 받아오기
+#     documents = request.form.get('documents')
+#     num_topics = int(request.form.get('num_topics'))
+#
+#     # 문서 토큰화 및 불용어 제거
+#     stopwords = ['the', 'and', 'of', 'to', 'in', 'a']
+#     texts = [[word for word in document.lower().split() if word not in stopwords] for document in documents.split('\n')]
+#
+#     # 문서를 단어-빈도 행렬로 변환
+#     dictionary = corpora.Dictionary(texts)
+#     corpus = [dictionary.doc2bow(text) for text in texts]
+#
+#     # LDA 모델링 수행
+#     lda = models.LdaModel(corpus, num_topics=num_topics, id2word=dictionary)
+#
+#     # 각 토픽의 상위 단어 출력
+#     topic_words = []
+#     for i in range(num_topics):
+#         topic_words.append([word for word, prob in lda.show_topic(i)])
+#
+#     return render_template('results.html', documents=documents, num_topics=num_topics, topic_words=topic_words)
 
 
 if __name__ == '__main__':
